@@ -14,10 +14,10 @@ void status_broadcast_once() {
 	int                  client_sock;        // Client socket descriptor
   	struct sockaddr_in   server_addr;     // Server Internet address
   	struct in_addr       server_ip_addr;  // Server IP Address
-  	int                  addr_leng;        // Internet address length
+  	int                  addr_leng;        // Internet address sizeof(in_buf)
 	int                  retrncode;         // Return code
 	int                  sOptVal;         // Socket option value
-	int                  sOptLen;         // Socket option length
+	int                  sOptLen;         // Socket option sizeof(in_buf)
 	char                 out_buf[4096];   // Output buffer for data
 	char                 in_buf[4096];    // Input buffer for data
 	char	             out_temp[4096];

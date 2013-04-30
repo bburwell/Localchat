@@ -21,8 +21,8 @@ void send_chat_request(char * username) {
 	pthread_mutex_unlock(&peer_table_lock);
 
 	struct sockaddr_in server_addr;
-	char out_buf[4096];
-	char in_buf[4096];
+	char out_buf[GLOBAL_MSG_LENGTH];
+	char in_buf[GLOBAL_MSG_LENGTH];
 	int retcode;
 
 	// create the socket
@@ -57,50 +57,12 @@ void send_chat_request(char * username) {
 		// set my in_chat flag
 		strcpy(in_chat, "Y");
 
-		// keep looping until no more input
-		int keep_going = 1;
-
-		while (keep_going) {
-
-			char inp[256];
-			printf("chat> ");
-			fgets(inp, 140, stdin);
-
-			if (strcmp(inp, "/q\n") == 0) {
-
-				// send quit message to peer
-				strcpy(out_buf, "SESQ");
-				send(client_s, out_buf, sizeof(out_buf), 0);
-				close(client_s);
-
-				// exit the loop
-				keep_going = 0;
-
-				// print message to user
-				printf("Session closed. \n");
-
-				// set my in_chat flag
-				strcpy(in_chat, "N");
-
-			} else {
-
-				// send the message
-				strcpy(out_buf, "SESMSG:");
-				strcat(out_buf, inp);
-				send(client_s, out_buf, sizeof(out_buf), 0);
-
-				// testing...
-				printf("%s \n", out_buf);
-
-			}
-
-		}
+		// set the user prompt
+		strcpy(prompt, "chat>");
 
 	} else {
 		printf("Session declined. \n");
 	}
-
-	close(client_s);
 
 	return;
 }

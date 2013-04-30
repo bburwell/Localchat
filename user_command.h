@@ -9,6 +9,51 @@ void process_user_command() {
 
 	int i;
 
+	if (respond_to_chat_request) {
+
+		// reset the global variable
+		respond_to_chat_request = 0;
+
+		if (strcmp(command, "y\n") == 0) {
+			accept_callback_accept();
+		} else {
+			accept_callback_decline();
+		}
+
+		return;
+	}
+
+	if (strcmp(in_chat, "Y") == 0) {
+
+		// in chat, send input to the peer
+		
+		if (strcmp(command, "/q\n") == 0) {
+
+			// send the quit message
+			strcpy(out_buf, "SESQ");
+			send(client_s, out_buf, strlen(out_buf)+1, 0);
+
+			// close the socket
+			close(client_s);
+
+			// set my flag
+			strcpy(in_chat, "N");
+
+			// reset prompt
+			strcpy(prompt, ">");
+
+		} else {
+
+			strcpy(out_buf, "SESMSG:");
+			strcat(out_buf, command);
+			send(client_s, out_buf, strlen(out_buf)+1, 0);
+
+		}
+
+		return;
+
+	}
+
 	if (strcmp(command, "quit\n") == 0) {
 		exit(0);
 	} else if (strcmp(command, "who\n") == 0) {

@@ -20,26 +20,37 @@
 #include <netdb.h>
 
 // define constants
-#define DEBUG         0
-#define MAX_NUM_PEERS 100
-#define CMD_PORT      6060
-#define CHAT_PORT     6061
-#define BROADCAST_IP  "192.168.130.255"
+#define DEBUG              0
+#define MAX_NUM_PEERS      100
+#define CMD_PORT           6060
+#define CHAT_PORT          6061
+#define BROADCAST_IP       "192.168.130.255"
+#define GLOBAL_MSG_LENGTH  1024
 
 // structs
 #include "peer.h"
 
 // global variables
-struct peer      peers[MAX_NUM_PEERS];
-int              num_peers_in_table = 0;
-pthread_mutex_t  peer_table_lock;
-                 
-char             my_ip[64];
-char             in_chat[4] = "N";
-const char *     username;
-                 
-char             command[256];
-int              client_s;
+struct peer         peers[MAX_NUM_PEERS];
+int                 num_peers_in_table = 0;
+pthread_mutex_t     peer_table_lock;
+                    
+char                my_ip[64];
+char                in_chat[4] = "N";
+const char *        username;
+                    
+char                command[256];
+char                prompt[16] = ">";
+
+int                 client_s;
+char                in_buf[GLOBAL_MSG_LENGTH];
+char                out_buf[GLOBAL_MSG_LENGTH];
+int                 retcode;
+int                 i;
+char *              token;
+struct sockaddr_in  client_addr;
+
+int                 respond_to_chat_request = 0;
 
 // include functions
 #include "clean_table.h"
@@ -93,7 +104,7 @@ int main(int argc, char const *argv[]) {
 
 	// enter the user input loop
 	while (1) {
-		printf("> ");
+		printf("%s ", prompt);
 		fgets(command, 256, stdin);
 		process_user_command();
 	}

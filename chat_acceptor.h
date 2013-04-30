@@ -7,37 +7,43 @@
 
 void *receive_chat_messages(void *arg) {
 
-	char in_buf[1024];
-	int  length = 1024;
-	int  retcode;
+	char   in_buf[GLOBAL_MSG_LENGTH];
+	int    retcode;
+	int    i;
+	char   separators[4] = ":";
+	char * tok;
 
-	retcode = recv(client_s, in_buf, length, 0);
-	printf("%s \n", in_buf);
+	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 
-	while (strcmp(in_buf, "SESQ")) {
-		retcode = recv(client_s, in_buf, length, 0);
+	while (strcmp(in_buf, "SESQ") != 0) {
+
 		if (retcode > 0) {
-			printf("%s \n", in_buf);
+
+			char *message;
+			message = strtok(in_buf, separators);
+			if (strcmp(message, "SESMSG") == 0) {
+				printf("\n    > %s", strtok(NULL, separators));
+			}
+
 		}
+
+		retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	}
 
+	printf("Peer closed the session. \n");
+
+	close(client_s);
+	strcpy(in_chat, "N");
+	strcpy(prompt, ">");
+
+	return;
 }
 
 void *chat_acceptor(void *arg) {
 
-	int                 client_s;
-	char                in_buf[4096];
-	char                out_buf[4096];
-	int                 length = 4096;
-	char                command[4096];
-	int                 retcode;
-	int                 i;
-	char *              token;
-	struct sockaddr_in  client_addr;
-
 	client_s = (int) arg;
 
-	retcode = recv(client_s, in_buf, length, 0);
+	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	
 	if (strcmp(in_chat, "Y") == 0) {
 
@@ -50,42 +56,36 @@ void *chat_acceptor(void *arg) {
 
 		// not in a chat, ask the user
 		
-		char ans[4];
 		printf("\n*** CHAT REQUEST *** \n");
 		printf("Accept [y/n]? ");
 		fflush(stdout);
-		fgets(ans, 2, stdin);
-
-		if (strcmp(ans, "y") == 0) {
-			strcpy(out_buf, "SESANS:Y");
-			send(client_s, out_buf, strlen(out_buf)+1, 0);
-
-			char inp[256];
-
-			pthread_t recv_thread;
-			pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
-
-			while (strcmp(inp, "/q\n") != 0) {
-				printf("chat> ");
-				fgets(inp, 256, stdin);
-
-				if (strcmp(inp, "/q\n") != 0) {
-					strcpy(out_buf, "SESMSG:");
-					strcat(out_buf, inp);
-					send(client_s, out_buf, strlen(out_buf)+1, 0);
-				} else {
-					strcpy(out_buf, "SESQ");
-					send(client_s, out_buf, strlen(out_buf)+1, 0);
-				}
-
-			}
-
-		} else {
-			strcpy(out_buf, "SESANS:N");
-			send(client_s, out_buf, strlen(out_buf)+1, 0);
-		}
+		
+		respond_to_chat_request = 1;
 	}
 
+	return;
+}
+
+void accept_callback_accept() {
+
+	strcpy(out_buf, "SESANS:Y");
+	send(client_s, out_buf, strlen(out_buf), 0);
+
+	char inp[256];
+
+	pthread_t recv_thread;
+	pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
+
+	strcpy(prompt, "chat>");
+	strcpy(in_chat, "Y");
+
+	return;
+}
+
+void accept_callback_decline() {
+
+	strcpy(out_buf, "SESANS:N");
+	send(client_s, out_buf, strlen(out_buf)+1, 0);
 	close(client_s);
 
 	return;
