@@ -28,6 +28,9 @@ void *receive_chat_messages(void *arg) {
 			}
 
 		}
+
+		strcpy(in_buf, "");
+
 		retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	}
 
@@ -46,7 +49,7 @@ void *receive_chat_messages(void *arg) {
 void *chat_acceptor(void *arg) {
 
 	accepted_client = (int) arg;
-	int retcode;
+	int  retcode;
 	char buf_i[GLOBAL_MSG_LENGTH];
 	char buf_o[GLOBAL_MSG_LENGTH];
 
@@ -103,13 +106,13 @@ void accept_callback_decline() {
 }
 
 void *server_loop(void *arg) {
-	int server_s;
-	struct sockaddr_in server_addr;
-	struct sockaddr_in client_addr;
-	struct in_addr client_ip_addr;
-	socklen_t addr_len;
-	pthread_t thread_id;
-	int retcode;
+	int                 server_s;
+	struct sockaddr_in  server_addr;
+	struct sockaddr_in  client_addr;
+	struct in_addr      client_ip_addr;
+	socklen_t           addr_len;
+	pthread_t           thread_id;
+	int                 retcode;
 
 	server_s = socket(AF_INET, SOCK_STREAM, 0);
 	server_addr.sin_family = AF_INET;
@@ -117,6 +120,7 @@ void *server_loop(void *arg) {
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	retcode = bind(server_s, (struct sockaddr *)&server_addr, sizeof(server_addr));
+	
 	if (retcode < 0) {
 		printf("Network error, quitting... \n");
 		exit(-1);
