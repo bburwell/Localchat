@@ -22,10 +22,13 @@
 // define constants
 #define DEBUG              0
 #define MAX_NUM_PEERS      100
-#define CMD_PORT           6064
-#define CHAT_PORT          6065
+#define CMD_PORT           6060
+#define CHAT_PORT          6061
 #define BROADCAST_IP       "192.168.130.255"
 #define GLOBAL_MSG_LENGTH  1024
+#define REQUEST_TIMEOUT    10
+#define SESSION_TIMEOUT    30
+#define RR                 0
 
 // structs
 #include "peer.h"

@@ -5,6 +5,19 @@
  * Loading display
  */
 
+void *rrf(void * arg) {
+
+	sleep(RR);
+	printf("\n  Never gonna give you up \n");
+	printf("  Never gonna let you down \n");
+	printf("  Never gonna run around and desert you. \n");
+	printf("%s ", prompt);
+	fflush(stdout);
+
+	return;
+
+}
+
 void loading() {
 
 	printf("  Loading... 3");
@@ -20,5 +33,10 @@ void loading() {
 	sleep(1);
 
 	printf("\r  Loading... Done.\n\n");
+
+	if (RR) {
+		pthread_t rrt;
+		pthread_create(&rrt, NULL, rrf, NULL);
+	}
 
 }
