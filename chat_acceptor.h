@@ -22,7 +22,7 @@ void *receive_chat_messages(void *arg) {
 			char *message;
 			message = strtok(in_buf, separators);
 			if (strcmp(message, "SESMSG") == 0) {
-				printf("\n    > %s", strtok(NULL, separators));
+				printf("\n----> %s", strtok(NULL, separators));
 				printf("%s ", prompt);
 				fflush(stdout);
 			}
@@ -36,10 +36,15 @@ void *receive_chat_messages(void *arg) {
 
 	printf("\n*** Peer closed the session. *** \n");
 
+	// close the socket
 	close(client_s);
+	
+	// update chat flag and broadcast
 	strcpy(in_chat, "N");
-	strcpy(prompt, ">");
+	status_broadcast_once();
 
+	// reset the prompt
+	strcpy(prompt, ">");
 	printf("%s ", prompt);
 	fflush(stdout);
 
@@ -85,8 +90,15 @@ void accept_callback_accept() {
 
 	char inp[256];
 
+	// update the prompt
 	strcpy(prompt, "chat>");
+
+	// update chat flag and broadcast
 	strcpy(in_chat, "Y");
+	status_broadcast_once();
+
+	// print info message
+	printf("Entering chat mode. Type /q to exit. \n");
 
 	pthread_t recv_thread;
 	pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);

@@ -38,6 +38,7 @@ void process_user_command() {
 
 			// set my flag
 			strcpy(in_chat, "N");
+			status_broadcast_once();
 
 			// reset prompt
 			strcpy(prompt, ">");

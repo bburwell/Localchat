@@ -22,8 +22,8 @@
 // define constants
 #define DEBUG              0
 #define MAX_NUM_PEERS      100
-#define CMD_PORT           6062
-#define CHAT_PORT          6063
+#define CMD_PORT           6063
+#define CHAT_PORT          6064
 #define BROADCAST_IP       "192.168.130.255"
 #define GLOBAL_MSG_LENGTH  1024
 #define REQUEST_TIMEOUT    10

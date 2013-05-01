@@ -69,6 +69,7 @@ void send_chat_request(char * username) {
 
 			// set my in_chat flag
 			strcpy(in_chat, "Y");
+			status_broadcast_once();
 
 			pthread_t recv_thread;
 			pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
