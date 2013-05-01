@@ -37,22 +37,27 @@
 struct peer         peers[MAX_NUM_PEERS];
 int                 num_peers_in_table = 0;
 pthread_mutex_t     peer_table_lock;
-                    
+     
+// my flags               
 char                my_ip[64];
 char                in_chat[4] = "N";
 const char *        username;
-                    
+
+// command line vars
 char                command[256];
 char                prompt[16] = ">";
 
+// client socket
 int                 client_s;
 char                in_buf[GLOBAL_MSG_LENGTH];
 char                out_buf[GLOBAL_MSG_LENGTH];
 struct sockaddr_in  client_addr;
 
+// for accepting connections pending user approval
 int                 accepted_client;
 struct sockaddr_in  accepted_addr;
 
+// indicates whether needs to respond to a request
 int                 respond_to_chat_request = 0;
 
 // include functions
