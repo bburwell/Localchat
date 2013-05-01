@@ -74,6 +74,9 @@ void *chat_acceptor(void *arg) {
 		printf("\n*** CHAT REQUEST *** \n");
 		printf("Accept [y/n]? ");
 		fflush(stdout);
+
+		// update the request time
+		time(&chat_requested_time);
 		
 		respond_to_chat_request = 1;
 	}

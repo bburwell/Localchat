@@ -60,6 +60,8 @@ struct sockaddr_in  accepted_addr;
 // indicates whether needs to respond to a request
 int                 respond_to_chat_request = 0;
 
+time_t              chat_requested_time;
+
 // include functions
 #include "clean_table.h"
 #include "online.h"

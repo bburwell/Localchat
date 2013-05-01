@@ -14,10 +14,24 @@ void process_user_command() {
 		// reset the global variable
 		respond_to_chat_request = 0;
 
-		if (strcmp(command, "y\n") == 0) {
-			accept_callback_accept();
+		// first check that we haven't expired
+		time_t now;
+		time(&now);
+
+		double diff = difftime(now, chat_requested_time);
+
+		if (diff > REQUEST_TIMEOUT) {
+
+			printf("The request has timed out. \n");
+
 		} else {
-			accept_callback_decline();
+
+			if (strcmp(command, "y\n") == 0) {
+				accept_callback_accept();
+			} else {
+				accept_callback_decline();
+			}
+
 		}
 
 		return;
