@@ -41,7 +41,6 @@ void process_user_command() {
 
 			// reset prompt
 			strcpy(prompt, ">");
-			printf("\n > ");
 
 		} else {
 
@@ -55,9 +54,9 @@ void process_user_command() {
 
 	}
 
-	if (strcmp(command, "quit\n") == 0) {
+	if (strcmp(command, "quit\n") == 0 || strcmp(command, "q\n") == 0) {
 		exit(0);
-	} else if (strcmp(command, "who\n") == 0) {
+	} else if (strcmp(command, "who\n") == 0 || strcmp(command, "w\n") == 0) {
 
 		// print a list of online peers
 		pthread_mutex_lock(&peer_table_lock);
@@ -74,7 +73,7 @@ void process_user_command() {
 
 		pthread_mutex_unlock(&peer_table_lock);
 
-	} else if (strcmp(command, "chat\n") == 0) {
+	} else if (strcmp(command, "chat\n") == 0 || strcmp(command, "c\n") == 0) {
 
 		char user[32];
 		int exists;
@@ -99,6 +98,7 @@ void process_user_command() {
 		printf("Command Summary: \n");
 		printf("  who:  display a list of online peers \n");
 		printf("  chat: initiate a chat session \n");
+		printf("  quit: exit the localchat program \n");
 
 	} else if (strcmp(command, "\n") == 0) {
 		// no command, do nothing.

@@ -22,34 +22,41 @@ void *receive_chat_messages(void *arg) {
 			char *message;
 			message = strtok(in_buf, separators);
 			if (strcmp(message, "SESMSG") == 0) {
-				printf("\n     > %s", strtok(NULL, separators));
+				printf("\n    > %s", strtok(NULL, separators));
+				printf("%s ", prompt);
+				fflush(stdout);
 			}
 
 		}
 		retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	}
 
-	printf("Peer closed the session. >\r\n  > ");
-	printf(" > ");
+	printf("\n*** Peer closed the session. *** \n");
 
 	close(client_s);
 	strcpy(in_chat, "N");
 	strcpy(prompt, ">");
+
+	printf("%s ", prompt);
+	fflush(stdout);
 
 	return;
 }
 
 void *chat_acceptor(void *arg) {
 
-	accepted_client = (int)arg;
+	accepted_client = (int) arg;
+	int retcode;
+	char buf_i[GLOBAL_MSG_LENGTH];
+	char buf_o[GLOBAL_MSG_LENGTH];
 
-	retcode = recv(accepted_client, accept_in, sizeof(accept_in), 0);
+	retcode = recv(accepted_client, buf_i, sizeof(buf_i), 0);
 	
 	if (strcmp(in_chat, "Y") == 0) {
 
 		// if already in a chat, reply no and close
-		strcpy(accept_out, "SESANS:N");
-		send(accepted_client, accept_out, strlen(accept_out)+1, 0);
+		strcpy(buf_o, "SESANS:N");
+		send(accepted_client, buf_o, strlen(buf_o)+1, 0);
 		close(accepted_client);
 
 	} else {
@@ -86,9 +93,11 @@ void accept_callback_accept() {
 
 void accept_callback_decline() {
 
-	strcpy(out_buf, "SESANS:N");
-	send(client_s, out_buf, strlen(out_buf)+1, 0);
-	close(client_s);
+	char buf[GLOBAL_MSG_LENGTH];
+
+	strcpy(buf, "SESANS:N");
+	send(accepted_client, buf, strlen(buf)+1, 0);
+	close(accepted_client);
 
 	return;
 }
@@ -96,7 +105,6 @@ void accept_callback_decline() {
 void *server_loop(void *arg) {
 	int server_s;
 	struct sockaddr_in server_addr;
-	int client_s;
 	struct sockaddr_in client_addr;
 	struct in_addr client_ip_addr;
 	socklen_t addr_len;
@@ -117,16 +125,16 @@ void *server_loop(void *arg) {
 	listen(server_s, 100);
 
 	while (1) {
-		addr_len = sizeof(client_addr);
+		addr_len = sizeof(accepted_addr);
 
-		client_s = accept(server_s, (struct sockaddr *)&client_addr, &addr_len);
+		accepted_client = accept(server_s, (struct sockaddr *)&accepted_addr, &addr_len);
 
-		if (client_s == -1) {
+		if (accepted_client == -1) {
 			printf("Network error, quitting... \n");
 			exit(-1);
 		}
 
-		pthread_create(&thread_id, NULL, chat_acceptor, (void *)client_s);
+		pthread_create(&thread_id, NULL, chat_acceptor, (void *)accepted_client);
 	}
 
 	return;

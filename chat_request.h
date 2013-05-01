@@ -6,11 +6,10 @@
  */
 
 
-void *send_chat_request(void * arg) {
+void send_chat_request(char * username) {
 
 	int i;
 	char ip[16];
-	char * username = (char *) arg;
 
 	pthread_mutex_lock(&peer_table_lock);
 
@@ -22,10 +21,10 @@ void *send_chat_request(void * arg) {
 
 	pthread_mutex_unlock(&peer_table_lock);
 
-	struct sockaddr_in server_addr;
-	char out_buf[GLOBAL_MSG_LENGTH];
-	char in_buf[GLOBAL_MSG_LENGTH];
-	int retcode;
+	struct sockaddr_in  server_addr;
+	char                out_buf[GLOBAL_MSG_LENGTH];
+	char                in_buf[GLOBAL_MSG_LENGTH];
+	int                 retcode;
 
 	// create the socket
 	client_s = socket(AF_INET, SOCK_STREAM, 0);
@@ -51,8 +50,6 @@ void *send_chat_request(void * arg) {
 	strcpy(out_buf, "SESREQ");
 	send(client_s, out_buf, strlen(out_buf), 0);
 
-
-
 	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 
 	if (strcmp(in_buf, "SESANS:Y") == 0) {
@@ -74,15 +71,3 @@ void *send_chat_request(void * arg) {
 	return;
 }
 
-void start_chat_request_thread(char * user) {
-
-	pthread_create(&requester_t, NULL, send_chat_request, (void *)user);
-
-	sleep(10);
-
-	printf("Request timed out. \n");
-
-	pthread_cancel(requester_t);
-
-	return;
-}
