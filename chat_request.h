@@ -5,10 +5,12 @@
  * Send chat request
  */
 
-void send_chat_request(char * username) {
+
+void *send_chat_request(void * arg) {
 
 	int i;
 	char ip[16];
+	char * username = (char *) arg;
 
 	pthread_mutex_lock(&peer_table_lock);
 
@@ -49,6 +51,8 @@ void send_chat_request(char * username) {
 	strcpy(out_buf, "SESREQ");
 	send(client_s, out_buf, strlen(out_buf), 0);
 
+
+
 	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 
 	if (strcmp(in_buf, "SESANS:Y") == 0) {
@@ -57,12 +61,28 @@ void send_chat_request(char * username) {
 		// set my in_chat flag
 		strcpy(in_chat, "Y");
 
+		pthread_t recv_thread;
+		pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
+
 		// set the user prompt
 		strcpy(prompt, "chat>");
 
 	} else {
 		printf("Session declined. \n");
 	}
+
+	return;
+}
+
+void start_chat_request_thread(char * user) {
+
+	pthread_create(&requester_t, NULL, send_chat_request, (void *)user);
+
+	sleep(10);
+
+	printf("Request timed out. \n");
+
+	pthread_cancel(requester_t);
 
 	return;
 }

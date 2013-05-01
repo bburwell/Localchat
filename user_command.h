@@ -41,6 +41,7 @@ void process_user_command() {
 
 			// reset prompt
 			strcpy(prompt, ">");
+			printf("\n > ");
 
 		} else {
 

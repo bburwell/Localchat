@@ -22,8 +22,8 @@
 // define constants
 #define DEBUG              0
 #define MAX_NUM_PEERS      100
-#define CMD_PORT           6060
-#define CHAT_PORT          6061
+#define CMD_PORT           6062
+#define CHAT_PORT          6063
 #define BROADCAST_IP       "192.168.130.255"
 #define GLOBAL_MSG_LENGTH  1024
 
@@ -50,7 +50,15 @@ int                 i;
 char *              token;
 struct sockaddr_in  client_addr;
 
+
+int                 accepted_client;
+char                accept_out[16];
+char                accept_in[128];
+
 int                 respond_to_chat_request = 0;
+
+pthread_t           requester_t;
+char                user_name_request[32];
 
 // include functions
 #include "clean_table.h"
@@ -61,8 +69,8 @@ int                 respond_to_chat_request = 0;
 #include "receive.h"
 #include "check_user_name.h"
 #include "loading.h"
-#include "chat_request.h"
 #include "chat_acceptor.h"
+#include "chat_request.h"
 #include "user_command.h"
 
 int main(int argc, char const *argv[]) {
@@ -104,7 +112,7 @@ int main(int argc, char const *argv[]) {
 
 	// enter the user input loop
 	while (1) {
-		printf("%s ", prompt);
+		printf("\n %s ", prompt);
 		fgets(command, 256, stdin);
 		process_user_command();
 	}

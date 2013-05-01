@@ -22,15 +22,15 @@ void *receive_chat_messages(void *arg) {
 			char *message;
 			message = strtok(in_buf, separators);
 			if (strcmp(message, "SESMSG") == 0) {
-				printf("\n    > %s", strtok(NULL, separators));
+				printf("\n     > %s", strtok(NULL, separators));
 			}
 
 		}
-
 		retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	}
 
-	printf("Peer closed the session. \n");
+	printf("Peer closed the session. >\r\n  > ");
+	printf(" > ");
 
 	close(client_s);
 	strcpy(in_chat, "N");
@@ -41,16 +41,16 @@ void *receive_chat_messages(void *arg) {
 
 void *chat_acceptor(void *arg) {
 
-	client_s = (int) arg;
+	accepted_client = (int)arg;
 
-	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
+	retcode = recv(accepted_client, accept_in, sizeof(accept_in), 0);
 	
 	if (strcmp(in_chat, "Y") == 0) {
 
 		// if already in a chat, reply no and close
-		strcpy(out_buf, "SESANS:N");
-		send(client_s, out_buf, strlen(out_buf)+1, 0);
-		close(client_s);
+		strcpy(accept_out, "SESANS:N");
+		send(accepted_client, accept_out, strlen(accept_out)+1, 0);
+		close(accepted_client);
 
 	} else {
 
@@ -68,16 +68,18 @@ void *chat_acceptor(void *arg) {
 
 void accept_callback_accept() {
 
+	client_s = accepted_client;
+
 	strcpy(out_buf, "SESANS:Y");
-	send(client_s, out_buf, strlen(out_buf), 0);
+	send(client_s, out_buf, strlen(out_buf)+1, 0);
 
 	char inp[256];
 
-	pthread_t recv_thread;
-	pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
-
 	strcpy(prompt, "chat>");
 	strcpy(in_chat, "Y");
+
+	pthread_t recv_thread;
+	pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
 
 	return;
 }
