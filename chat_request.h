@@ -5,7 +5,6 @@
  * Send chat request
  */
 
-
 void send_chat_request(char * username) {
 
 	int i;
@@ -50,22 +49,36 @@ void send_chat_request(char * username) {
 	strcpy(out_buf, "SESREQ");
 	send(client_s, out_buf, strlen(out_buf), 0);
 
+	// set the timeout of the socket
+	struct timeval tv;
+	tv.tv_sec  = REQUEST_TIMEOUT;
+	tv.tv_usec = 0;
+	setsockopt(client_s, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(struct timeval));
+
 	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 
-	if (strcmp(in_buf, "SESANS:Y") == 0) {
-		printf("Request accepted, type /q to leave. \n");
+	if (retcode == -1) {
 
-		// set my in_chat flag
-		strcpy(in_chat, "Y");
-
-		pthread_t recv_thread;
-		pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
-
-		// set the user prompt
-		strcpy(prompt, "chat>");
+		// socket timed out or didn't receive anything
+		printf("No response from peer within timeout window \n");
 
 	} else {
-		printf("Session declined. \n");
+
+		if (strcmp(in_buf, "SESANS:Y") == 0) {
+			printf("Request accepted, type /q to leave. \n");
+
+			// set my in_chat flag
+			strcpy(in_chat, "Y");
+
+			pthread_t recv_thread;
+			pthread_create(&recv_thread, NULL, receive_chat_messages, NULL);
+
+			// set the user prompt
+			strcpy(prompt, "chat>");
+
+		} else {
+			printf("Session declined. \n");
+		}
 	}
 
 	return;
