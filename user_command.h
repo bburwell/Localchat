@@ -111,12 +111,24 @@ void process_user_command() {
 		}
 
 
+	} else if (strcmp(command, "ip\n") == 0) {
+
+		char user[32];
+
+		printf("user: ");
+		fgets(user, 32, stdin);
+
+		user[strlen(user) - 1] = 0;
+
+		get_ip_by_username(user);
+
 	} else if (strcmp(command, "help\n") == 0 || strcmp(command, "?\n") == 0) {
 
 		printf("Command Summary: \n");
 		printf("  who:  display a list of online peers \n");
 		printf("  chat: initiate a chat session \n");
 		printf("  quit: exit the localchat program \n");
+		printf("  ip:   display the IP address of a user \n");
 
 	} else if (strcmp(command, "\n") == 0) {
 		// no command, do nothing.
