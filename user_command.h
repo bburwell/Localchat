@@ -61,6 +61,9 @@ void process_user_command() {
 
 			strcpy(out_buf, "SESMSG:");
 			strcat(out_buf, command);
+
+			out_buf[strlen(out_buf)-1] = '\0';
+
 			send(client_s, out_buf, strlen(out_buf)+1, 0);
 
 		}

@@ -28,7 +28,7 @@ void *receive_chat_messages(void *arg) {
 			char *message;
 			message = strtok(in_buf, separators);
 			if (strcmp(message, "SESMSG") == 0) {
-				printf("\n----> %s", strtok(NULL, separators));
+				printf("\n----> %s \n", strtok(NULL, separators));
 				printf("%s ", prompt);
 				fflush(stdout);
 			}
