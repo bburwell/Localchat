@@ -13,6 +13,12 @@ void *receive_chat_messages(void *arg) {
 	char   separators[4] = ":";
 	char * tok;
 
+	// set the timeout of the socket
+	struct timeval tv;
+	tv.tv_sec  = SESSION_TIMEOUT;
+	tv.tv_usec = 0;
+	setsockopt(client_s, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(struct timeval));
+
 	retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 
 	while (strcmp(in_buf, "SESQ") != 0) {
@@ -27,6 +33,8 @@ void *receive_chat_messages(void *arg) {
 				fflush(stdout);
 			}
 
+		} else {
+			break;
 		}
 
 		strcpy(in_buf, "");
@@ -34,7 +42,12 @@ void *receive_chat_messages(void *arg) {
 		retcode = recv(client_s, in_buf, sizeof(in_buf), 0);
 	}
 
-	printf("\n*** Peer closed the session. *** \n");
+	// display appropriate error message
+	if (retcode == -1) {
+		printf("\n*** Session timed out. *** \n");
+	} else {
+		printf("\n*** Peer closed the session. *** \n");
+	}
 
 	// close the socket
 	close(client_s);
