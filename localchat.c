@@ -26,7 +26,7 @@
 #define CHAT_PORT          6064
 #define BROADCAST_IP       "192.168.130.255"
 #define GLOBAL_MSG_LENGTH  1024
-#define REQUEST_TIMEOUT    10
+#define REQUEST_TIMEOUT    5
 #define SESSION_TIMEOUT    30
 #define RR                 0
 
@@ -60,6 +60,7 @@ struct sockaddr_in  accepted_addr;
 // indicates whether needs to respond to a request
 int                 respond_to_chat_request = 0;
 
+// for timeout of chat requests
 time_t              chat_requested_time;
 
 // include functions
