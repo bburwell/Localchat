@@ -22,8 +22,8 @@
 // define constants
 #define DEBUG              0
 #define MAX_NUM_PEERS      100
-#define CMD_PORT           6063
-#define CHAT_PORT          6064
+#define CMD_PORT           6060
+#define CHAT_PORT          6061
 #define BROADCAST_IP       "192.168.130.255"
 #define GLOBAL_MSG_LENGTH  1024
 #define REQUEST_TIMEOUT    5
@@ -77,7 +77,7 @@ time_t              chat_requested_time;
 #include "user_command.h"
 
 int main(int argc, char const *argv[]) {
-	
+
 	if (argc != 2) {
 		printf("Usage: %s [username]\n", argv[0]);
 		return -1;
