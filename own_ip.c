@@ -5,6 +5,8 @@
  * Gets host IP
  */
 
+#include "localchat.h"
+ 
 void get_own_ip() {
 
 	char name_buf[256];

@@ -5,6 +5,8 @@
  * Status broadcast thread functionality
  */
 
+#include "localchat.h"
+ 
 void status_broadcast_once() {
 
 	if (username == NULL) {

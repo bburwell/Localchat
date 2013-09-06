@@ -5,76 +5,7 @@
  * Main Program
  */
 
-// include necessary libraries
-#include <stdio.h>
-#include <time.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <netdb.h>
-
-// define constants
-#define DEBUG              0
-#define MAX_NUM_PEERS      100
-#define CMD_PORT           6060
-#define CHAT_PORT          6061
-#define BROADCAST_IP       "192.168.130.255"
-#define GLOBAL_MSG_LENGTH  1024
-#define REQUEST_TIMEOUT    5
-#define SESSION_TIMEOUT    30
-#define RR                 0
-
-// structs
-#include "peer.h"
-
-// global variables
-struct peer         peers[MAX_NUM_PEERS];
-int                 num_peers_in_table = 0;
-pthread_mutex_t     peer_table_lock;
-     
-// my flags               
-char                my_ip[64];
-char                in_chat[4] = "N";
-const char *        username;
-
-// command line vars
-char                command[256];
-char                prompt[16] = ">";
-
-// client socket
-int                 client_s;
-char                in_buf[GLOBAL_MSG_LENGTH];
-char                out_buf[GLOBAL_MSG_LENGTH];
-struct sockaddr_in  client_addr;
-
-// for accepting connections pending user approval
-int                 accepted_client;
-struct sockaddr_in  accepted_addr;
-
-// indicates whether needs to respond to a request
-int                 respond_to_chat_request = 0;
-
-// for timeout of chat requests
-time_t              chat_requested_time;
-
-// include functions
-#include "clean_table.h"
-#include "online.h"
-#include "own_ip.h"
-#include "status.h"
-#include "parse.h"
-#include "receive.h"
-#include "check_user_name.h"
-#include "loading.h"
-#include "chat_acceptor.h"
-#include "chat_request.h"
-#include "user_command.h"
+#include "localchat.h"
 
 int main(int argc, char const *argv[]) {
 

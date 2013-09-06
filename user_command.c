@@ -5,6 +5,8 @@
  * Process user input
  */
 
+#include "localchat.h"
+ 
 void process_user_command() {
 
 	int i;

@@ -5,6 +5,8 @@
  * Thread management functions
  */
 
+#include "localchat.h"
+ 
 void *receive_function(void *arg) {
 
 	char                in_buf[256];

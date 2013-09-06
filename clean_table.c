@@ -5,6 +5,8 @@
  * Table cleaning functions
  */
 
+#include "localchat.h"
+ 
 void *clean_table(void *arg) {
 
 	int i;

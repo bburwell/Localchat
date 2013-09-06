@@ -5,6 +5,8 @@
  * Checks whether a username is in use
  */
 
+#include "localchat.h"
+ 
 int check_user_name(const char * username) {
 
 	int i;

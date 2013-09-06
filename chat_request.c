@@ -5,6 +5,8 @@
  * Send chat request
  */
 
+#include "localchat.h"
+
 void send_chat_request(char * username) {
 
 	int i;

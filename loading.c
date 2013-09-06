@@ -5,6 +5,8 @@
  * Loading display
  */
 
+#include "localchat.h"
+ 
 void *rrf(void * arg) {
 
 	// wait predetermined interval

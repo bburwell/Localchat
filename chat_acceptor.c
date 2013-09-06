@@ -5,6 +5,8 @@
  * Chat request accepting functionality
  */
 
+#include "localchat.h"
+
 void *receive_chat_messages(void *arg) {
 
 	char   in_buf[GLOBAL_MSG_LENGTH];

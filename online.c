@@ -5,6 +5,8 @@
  * Send online broadcast
  */
 
+#include "localchat.h"
+ 
 void send_online_broadcast() {
 	int                  client_sock;        // Client socket descriptor
 	struct sockaddr_in   server_addr;     // Server Internet address

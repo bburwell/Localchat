@@ -5,6 +5,8 @@
  * Parse received command packets
  */
 
+#include "localchat.h"
+ 
 void parse_command(char packet[256]) {
 	
 	char separators[4] = ":";
